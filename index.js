@@ -1,28 +1,47 @@
-const axios = require('axios');
-const { Telegraf } = require('telegraf');
-require('dotenv').config({ path: '.env' }); // Load .env file correctly
-const botapiToken = process.env.TELEGRAM_BOT_API_TOKEN; // Access the environment variable
+const http = require('http');
+const skullBot = require('./netlify/functions/skullBot');
 
-// Create a Telegram bot instance
-const bot = new Telegraf(botapiToken);
+const port = process.env.PORT || 3000;
 
-// Handle '/start' command
-bot.start((ctx) => ctx.reply('Welcome to skull 💀 price bot'));
-
-// Handle '/price' command
-bot.command('price', async (ctx) => {
-  const url = "https://backend.unicorn.meme/market/price/factory%2Funicorn1rn9f6ack3u8t3ed04pfaqpmh5zfp2m2ll4mkty%2Fuskull?frame=1h";
-  try {
-    const response = await axios.get(url);
-    const responseData = response.data;
-    // Assuming responseData is a string
-    let price = parseFloat(responseData); 
-    ctx.reply(`💀 ${price.toFixed(4)}`);
-  } catch (err) {
-    console.error(err);
-    ctx.reply('Failed to retrieve price data.');
+const server = http.createServer(async (req, res) => {
+  const { method } = req;
+  if (method === 'POST') {
+    // Handle POST requests as before
+    const body = [];
+    req.on('data', data => body.push(data.toString()));
+    req.on('end', async () => {
+      const message = JSON.parse(body.join(''));
+      try {
+        const result = await skullBot(req, res); // Pass the request and response objects as arguments
+        res.statusCode = 200;
+        res.setHeader('Content-Type', 'application/json');
+        res.end(JSON.stringify(result));
+      } catch (err) {
+        console.error(err);
+        res.statusCode = 500;
+        res.setHeader('Content-Type', 'application/json');
+        res.end(JSON.stringify({ error: err.message }));
+      }
+    });
+  } else if (method === 'GET') {
+    try {
+      const result = await skullBot(req, res); // Pass the request and response objects as arguments
+      res.statusCode = 200;
+      res.setHeader('Content-Type', 'application/json');
+      res.end(JSON.stringify(result));
+    } catch (err) {
+      console.error(err);
+      res.statusCode = 500;
+      res.setHeader('Content-Type', 'application/json');
+      res.end(JSON.stringify({ error: err.message }));
+    }
+  } else {
+    res.statusCode = 405;
+    res.setHeader('Content-Type', 'text/plain');
+    res.end('Method Not Allowed\n');
   }
 });
 
-// Launch the Telegram bot
-bot.launch();
+server.listen(port, () => {
+  console.log(`Server listening on port ${port}`);
+});
