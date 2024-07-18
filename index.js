@@ -1,4 +1,3 @@
-const http = require('http');
 const axios = require('axios');
 const { Telegraf } = require('telegraf');
 require('dotenv').config({ path: '.env' }); // Load .env file correctly
@@ -23,15 +22,6 @@ bot.command('price', async (ctx) => {
     console.error(err);
     ctx.reply('Failed to retrieve price data.');
   }
-});
-
-// Start the HTTP server to listen for incoming requests
-const server = http.createServer((req, res) => {
-  // Handle incoming HTTP requests
-});
-
-server.listen(process.env.PORT || 3000, () => {
-  console.log(`Server listening on port ${process.env.PORT || 3000}`);
 });
 
 // Launch the Telegram bot
