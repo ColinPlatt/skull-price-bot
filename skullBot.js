@@ -7,7 +7,7 @@ const botapiToken = process.env.TELEGRAM_BOT_API_TOKEN; // Access the environmen
 const bot = new Telegraf(botapiToken);
 
 // Handle '/start' command
-bot.start((ctx) => ctx.reply('Welcome to skull 💀 price bot'));
+bot.start((ctx) => ctx.reply('💀💀💀 Welcome to skull price bot 💀💀💀'));
 
 // Handle '/price' command
 bot.command('price', async (ctx) => {
