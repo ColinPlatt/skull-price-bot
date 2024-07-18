@@ -1,14 +1,12 @@
 const axios = require('axios');
-const { telegraf } = require('telegraf');
 require('dotenv').config({ path: '.env' });
 
 const botapiToken = process.env.TELEGRAM_BOT_API_TOKEN;
+const telegraf = require('telegraf')(botapiToken);
 
-const bot = new telegraf(botapiToken);
+telegraf.start((ctx) => ctx.reply('Welcome to skull 💀 price bot'));
 
-bot.start((ctx) => ctx.reply('Welcome to skull 💀 price bot'));
-
-bot.command('price', async (ctx) => {
+telegraf.command('price', async (ctx) => {
   const url = "https://backend.unicorn.meme/market/price/factory%2Funicorn1rn9f6ack3u8t3ed04pfaqpmh5zfp2m2ll4mkty%2Fuskull?frame=1h";
   try {
     const response = await axios.get(url);
@@ -21,12 +19,12 @@ bot.command('price', async (ctx) => {
   }
 });
 
-bot.launch();
+telegraf.launch();
 
 module.exports = async (event, context) => {
   const { message } = JSON.parse(event.body);
 
-  await bot.handleUpdate(message.update_id, message.message); // Handle incoming messages
+  await telegraf.handleUpdate(message.update_id, message.message); // Handle incoming messages
 
   return {
     statusCode: 200,
