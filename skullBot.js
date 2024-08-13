@@ -11,7 +11,7 @@ bot.start((ctx) => ctx.reply('💀💀💀 Welcome to skull price bot 💀💀�
 
 // Handle '/price' command
 bot.command('price', async (ctx) => {
-  const url = "https://backend.unicorn.meme/market/price/factory%2Funicorn1rn9f6ack3u8t3ed04pfaqpmh5zfp2m2ll4mkty%2Fuskull?frame=1h";
+  const url = "https://backend.unicorn.meme/market/price/factory%2Funicorn1rn9f6ack3u8t3ed04pfaqpmh5zfp2m2ll4mkty%2Fuskull";
   try {
     const response = await axios.get(url);
     const responseData = response.data;
